@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    li{
+      list-style: none;
+      margin-top: 5px;
+    }
+    #commit1{
+      margin-top: 30px;
+      margin-left: 136px;
+    }
+  </style>
+</head>
+<body>
+请输入题目的数量(答案向下取整)：<input type="text"  id="number">
+<button id="doit">生成题目</button>
+<button id="against">重置</button>
+<div >
+  <ul id="list">
+
+  </ul>
+</div>
+
+
+<script type="text/javascript">
+  var bin = (function () {
+    var doit=document.getElementById('doit');
+    var result=[],n;
+    function fuhao(o){  //生成随机字符
+      var oyo;
+      if(0 <o&&o<25){
+        oyo="+";
+      }else if(25<o&&o<50){
+        oyo="-";
+      }else if(50<o&&o<75){
+        oyo="*";
+      }else{
+        oyo="/";
+      }
+      return oyo;
+    }
+
+    document.getElementById("against").addEventListener("click",function(){
+      location.replace(location.href);
+    });//题目重置
+
+    doit.addEventListener("click",function () {
+      n =document.getElementById('number').value;
+      for(i=0;i<n;i++){
+        var oo=Math.floor((Math.random()*10+4)/2);//有多少个符号
+        var aAarr=[];//符号数组
+        for(q=0;q<oo;q++){
+          var m=Math.floor(Math.random()*100+1);//随机符号
+          aAarr[q]=fuhao(m);
+        }
+
+        var oo1=oo+1;//有多少数字
+        var oAarr=[];//随机数数组
+        for(z=0;z<oo1;z++){
+          oAarr[z]=Math.floor(Math.random()*100+1);//随机数
+        }
+
+        var bigArray=[];
+        var v=0;
+        var x=0;
+        for(j=0;j<oo*2+2;j++){
+
+            if(j%2==0){
+                bigArray[j]=oAarr[v++];
+            }else{
+                bigArray[j]=aAarr[x++];
+            }
+        }
+        //判断结果是否大于0
+        for(k=0;k<oo;k++){
+            if(aAarr[k]=='*'){
+              oAarr[k+1]=oAarr[k]*oAarr[k+1];
+                oAarr[k]=0;
+                aAarr[k]='+';
+            }else if(aAarr[k]=='/'){
+              oAarr[k+1]=oAarr[k]/oAarr[k+1];
+              oAarr[k]=0;
+              aAarr[k]='+';
+            }
+        }
+        result[i]=oAarr[0];
+        for(w=0;w<oo;w++){
+            if(aAarr[w]=='+'){
+                result[i]=oAarr[w+1]+result[i];
+            }
+            else if(aAarr[w]=='-'){
+                result[i]=result[i]-oAarr[w+1];
+            }
+        }
+        if(result[i]<=0){
+            i--;
+            continue;
+        }
+        //添加到父组件
+        var trues=0;
+        var add = document.createElement("li");
+        add.setAttribute("class","test");
+        add.innerHTML=bigArray.join("")+"=?<input type='text' class='print' style='width: 40px;left: 250px;position: absolute;float: left'/>";
+        document.getElementById("list").appendChild(add);
+        if(i==n-1){
+            var btn = document.createElement("div");
+          var p = document.createElement("div");
+            btn.innerHTML="<button id='commit1'>提交</button>";
+          document.getElementById("list").appendChild(btn);
+          document.getElementById("commit1").addEventListener("click",function () {
+            var list = document.getElementsByClassName("test");
+            var print = document.getElementsByClassName("print");
+            for(var kk=0;kk<n;kk++){
+              var last_result = document.createElement("div");
+              if(print[kk].value==Math.ceil(result[kk])){
+                last_result.innerHTML="<div style='color: #3dce03'>恭喜你答对了！</div>"
+                trues++;
+              }
+              else {
+                last_result.innerHTML="<div style='color: #ce441f'>太遗憾了正确答案为:"+Math.ceil(result[kk])+"</div>"
+              }
+              list[kk].appendChild(last_result);
+              if(kk==n-1){
+                p.innerHTML="<p style='color: deepskyblue'>您的总得分为："+Math.round(trues/n*100)+"</p>";
+                list[kk].appendChild(p);
+              }
+            }
+          })
+        }
+
+      }
+    });
+  })();
+
+</script>
+</body>
+</html>
